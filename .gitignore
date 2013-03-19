@@ -35,6 +35,6 @@ nosetests.xml
 .pydevproject
 
 # LaTeX
-.log
-.aux
-.synctex.gz
+project_proposal/*.aux
+project_proposal/*.synctex.gz
+project_proposal/*.log
