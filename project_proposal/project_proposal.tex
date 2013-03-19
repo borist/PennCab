@@ -1,0 +1,78 @@
+\documentclass[11pt]{article}
+
+\usepackage{fancyhdr} % Required for custom headers
+\usepackage[explicit]{titlesec}
+\usepackage{extramarks} % Required for headers and footers
+\usepackage[usenames,dvipsnames]{color} % Required for custom colors
+\usepackage{graphicx} % Required to insert images
+\usepackage{listings} % Required for insertion of code
+%\usepackage{courier} % Required for the courier font
+\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+
+% Margins
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1} % Line spacing
+
+% Set up the header
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName} % Top left header
+\chead{\hmwkClass\ : \hmwkTitle} % Top center head
+\rhead{\firstxmark} % Top right header
+\renewcommand\headrulewidth{0.4pt} % Size of the header rule
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+
+
+\newcommand{\hmwkTitle}{Final Project Proposal} % Assignment title
+\newcommand{\hmwkClass}{Cis\ 192} % Course/class
+\newcommand{\hmwkAuthorName}{Boris Treskunov} % Your name
+
+\begin{document}
+\pagenumbering{gobble}
+\section*{Project Idea}
+
+I would like to create a website that allows users at Penn to coordinate cab rides with one another: \textbf{PennCab}. A good usage example is for cabs to and from the airport: let's say after Winter Break you have a flight back to Philadelphia that lands at, say, 9:00pm and you don't want to pay the \$30+ for a cab by yourself. You can create a cab ride on the website that others (anyone at Penn) can join, and then you can share the ride back together!
+
+\section*{Goals}
+
+\begin{enumerate}
+\item Users should be able to create ``cab rides" with the following constraints:
+    \begin{enumerate}
+    \item Maximum number of people (defaulted to 4)
+    \item Origin
+    \item Destination
+    \item Date
+    \item Approximate departure time
+    \item Optional: Event/Purpose
+    \end{enumerate}
+
+\item Users should be able to join any cab that is under capacity and in the future.
+\item After users have signed up to take a cab together, their contact information will be shared amongst each other so that they can coordinate properly.
+\item Sign-ups only allowed with upenn.edu email address.
+\item Front-end will probably be built using a front-end framework (such as Bootstrap or Foundation) so that the focus on the project can be backend functionality in Python.
+
+\end{enumerate}
+
+\subsection*{Stretch/Time-Permitting Goals}
+\begin{enumerate}
+\item Share links to cab rides on social networks (namely, Facebook and Twitter).
+\item Be able to distinguish and create both public and private cab rides. Private cab rides could be used to coordinate with friends, for example.
+\item Better way of ensuring only Penn students can sign up for website (e-mail verification?).
+\item TBD!
+\end{enumerate}
+
+\section*{Expected Python Package Usage}
+
+The main packages I will be using are Flask or Django, and a database package (probably MySQLdb or PyMongo).
+
+\section*{Team Members and Divison of Labor}
+
+Just me!
+
+\end{document}
