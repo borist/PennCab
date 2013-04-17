@@ -1,14 +1,79 @@
 {% load staticfiles %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'cabrides/style/bootstrap.min.css' %}" />
+<head>
+<link rel="stylesheet" type="text/css" href="{% static 'cabrides/style/bootstrap.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'cabrides/style/bootstrap-responsive.css' %}" />
+<style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
 
+</head>
+
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">PennCab</a>
+          <div class="nav-collapse collapse">
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div class="container">
 {% if latest_rides_list %}
-    <ul>
     {% for ride in latest_rides_list %}
-       <!--- <li><a href="/cabrides/{{ poll.id }}/">{{ poll.question }}</a></li> -->
-        <li>{{ ride.destination }}, {{ ride.ride_owner }} </li>
+      {% if not ride.ride_in_past %}
+        <div class="hero-unit">
+          <div class="container">
+              <h2>Cab to {{ ride.destination }}</h2>
+              <div class="row">
+                  <div class="span4">
+                        Leaving from: <b>{{ ride.origin }}</b><br/>
+                        On: <b>{{ ride.ride_date|date:'l, F d Y' }}</b> at <b>{{ ride.ride_date|date:'H:i A' }}</b><br/>
+                        Owner: <b>{{ ride.ride_owner }}</b><br/>
+                        Max Riders: <b>{{ ride.max_riders }}</b>
+                  </div>
+                  <div class="span7">
+                        Riders: <br/>
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>First Name</th>
+                              <th>Last Name</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for rider in ride.participants.all %}
+                              <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ rider.first_name }}</td>
+                                <td>{{ rider.last_name }}</td>
+                              </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+
+
+                        {% if ride.num_available_spots > 0 %}
+                          <form action="{% url 'cabrides:add_rider' ride.id ride.id %}" method="post">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-primary pull-right">Join This Ride</button>
+                          </form>
+                        {% endif %}
+                  </div>
+              </div>
+          </div>
+        </div>
+      {% endif %}
     {% endfor %}
-    </ul>
 {% else %}
     <p>No Rides are available.</p>
 {% endif %}
+</div> <!-- container -->
+</body>
+

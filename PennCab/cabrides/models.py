@@ -1,4 +1,7 @@
+import datetime
+
 from django.db import models
+from django.utils import timezone
 
 class User(models.Model):
     first_name = models.CharField(max_length=100)
@@ -23,3 +26,14 @@ class Ride(models.Model):
 
     def __unicode__(self):
         return "Ride to: %s, owned by %s" % (self.destination, self.ride_owner)
+
+    def num_available_spots(self):
+        num = self.max_riders - self.participants.count()
+        if num <= 0:
+            return None
+        else:
+            return range(num)
+
+    def ride_in_past(self):
+        return self.ride_date < timezone.now()
+
