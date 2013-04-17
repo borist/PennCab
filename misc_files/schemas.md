@@ -1,0 +1,1 @@
+User(**id**, first_name, last_name, email, password, phone_number, photo_url)
