@@ -1,0 +1,14 @@
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'cabrides/style/bootstrap.min.css' %}" />
+
+{% if latest_rides_list %}
+    <ul>
+    {% for ride in latest_rides_list %}
+       <!--- <li><a href="/cabrides/{{ poll.id }}/">{{ poll.question }}</a></li> -->
+        <li>{{ ride.destination }}, {{ ride.ride_owner }} </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No Rides are available.</p>
+{% endif %}
