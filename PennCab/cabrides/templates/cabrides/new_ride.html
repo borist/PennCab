@@ -1,0 +1,70 @@
+{% load staticfiles %}
+<head>
+	<link rel="stylesheet" type="text/css" href="{% static 'cabrides/style/bootstrap.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'cabrides/style/bootstrap-responsive.css' %}" />
+	<style type="text/css">
+      body {
+        padding-top: 30px;
+        padding-bottom: 30px;
+        /*background-color: #f5f5f5;*/
+      }
+      .form-new-ride label {
+      	font-size: 15px;
+      }
+      .form-new-ride input[type="text"],
+      .form-new-ride input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+      .long {
+      	width: 30%;
+      }
+
+    </style>
+</head>
+
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">PennCab</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">My Rides</a></li>
+            </ul>
+             <form class="navbar-form pull-right" action="{% url 'cabrides:navbar_item' %}" method="post">
+                {% csrf_token %}
+              <button name="logout" type="submit" class="btn btn-inverse">Logout</button>
+             </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+	<div style="margin-top: 25px" class="container">
+		<form class="form-new-ride" action="{% url 'cabrides:create_ride' %}" method="post">
+	    {% csrf_token %}
+	    <legend>Create A New Cab Ride Below!</legend>
+			<label>Origin*</label>
+	    	<input class="long" name="origin" type="text" placeholder="Where will the cab be picking you up?">
+
+	    	<label>Destination*</label>
+	    	<input class="long" name="destination" type="text" placeholder="What is your cab's final destination?">
+
+	    	<label>Date*</label>
+	    	<input name="date" type="text" placeholder="mm/dd/yyyy">
+
+	    	<label>Time*</label>
+	    	<input name="time" type="text" placeholder="##:## AM/PM">
+	    	<span class="help-block">Please use the format: '##:## AM/PM'</span>
+
+	    	<label>Max Number of Passenger:*</label>
+	    	<input name="max_riders" type="text" value="4"> <br/>
+
+	    	<button style="margin-top: 10px" type="submit" class="btn btn-primary">Create Ride</button>
+		</form>
+	</div>
+</body>

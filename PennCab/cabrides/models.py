@@ -49,19 +49,15 @@ class CabUser(AbstractBaseUser):
     REQUIRED_FIELDS = ['first_name', 'last_name', 'phone_number']
 
     def get_full_name(self):
-        # The user is identified by their email address
         return self.email
 
     def get_short_name(self):
-        # The user is identified by their email address
         return self.email
 
     def has_perm(self, perm, obj=None):
-        # Simplest possible answer: Yes, always
         return True
 
     def has_module_perms(self, app_label):
-        # Simplest possible answer: Yes, always
         return True
 
     def __unicode__(self):
@@ -69,7 +65,7 @@ class CabUser(AbstractBaseUser):
 
     @property
     def is_staff(self):
-        return True #self.is_admin
+        return self.is_admin
 
 
 class Ride(models.Model):
@@ -94,3 +90,8 @@ class Ride(models.Model):
     def ride_in_past(self):
         return self.ride_date < timezone.now()
 
+    def is_participant(self, cabuser):
+        return self.participants.filter(email=cabuser.email).count() is 0
+
+    def is_owner(self, cabuser):
+        return self.ride_owner == cabuser

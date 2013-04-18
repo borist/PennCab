@@ -7,8 +7,11 @@ from cabrides.models import CabUser, Ride
 
 @login_required(login_url='/cabrides/login')
 def index(request):
-    latest_cab_rides = Ride.objects.order_by('-ride_date')[:5]
-    context = {'latest_rides_list': latest_cab_rides}
+    latest_cab_rides = Ride.objects.order_by('ride_date')[:5]
+    user = request.user
+    latest_rides_tup = [(ride, ride.is_participant(user), ride.is_owner(user)) 
+        for ride in latest_cab_rides]
+    context = {'latest_rides': latest_rides_tup}
     return render(request, 'cabrides/index.html', context)
 
 
@@ -17,6 +20,8 @@ def login_page(request):
 
 
 def login_user(request):
+    if 'signup' in request.POST:
+        return redirect('/cabrides/signup/')
     try:
         username = request.POST['username']
         password = request.POST['password']
@@ -30,12 +35,49 @@ def login_user(request):
         return loggedin_index(request)
 
 
-def logout_user(request):
-    logout(request)
-    return redirect('/cabrides/login/')
+def navbar_item(request):
+    if 'logout' in request.POST:
+        logout(request)
+        return redirect('/cabrides/login/')
+    elif 'new_ride' in request.POST:
+        return redirect('/cabrides/new_ride/')
 
 
-def add_rider(request, ride_id, user_id):
+def signup(request):
+    return render(request, 'cabrides/signup.html', {})
+
+
+def new_ride(request):
+    return render(request, 'cabrides/new_ride.html', {})
+
+
+def create_ride(request):
+    try:
+        origin = request.POST['origin']
+        destination = request.POST['destination']
+
+        return redirect('/cabrides/')
+    except KeyError:
+        return HttpResponse("Not all fields were filled out.") 
+
+def add_rider(request, ride_id):
     ride = get_object_or_404(Ride, pk=ride_id)
-    #user = get_object_or_404(CabUser, pk=user_id)
-    return HttpResponse("ride: %s, user to be added: %s" % (ride, user_id)) 
+    user = request.user
+    if 'join' in request.POST:
+        try:
+            ride.participants.add(user)
+            ride.save()
+            return redirect('/cabrides/')
+        except Error:
+            return HttpResponse("Something went wrong trying to add user")
+    else:
+        if ride.is_owner(user):
+            Ride.objects.get(pk=ride.id).delete()
+            return redirect('/cabrides/')
+        else:
+            try:
+                ride.participants.remove(user)
+                ride.save()
+                return redirect('/cabrides/')
+            except Error:
+                return HttpResponse("Something went wrong trying to remove user")
