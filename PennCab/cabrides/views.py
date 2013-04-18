@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from cabrides.models import User, Ride
+from cabrides.models import CabUser, Ride
 
 @login_required(login_url='/cabrides/login')
 def index(request):
@@ -37,5 +37,5 @@ def logout_user(request):
 
 def add_rider(request, ride_id, user_id):
     ride = get_object_or_404(Ride, pk=ride_id)
-    #user = get_object_or_404(User, pk=user_id)
+    #user = get_object_or_404(CabUser, pk=user_id)
     return HttpResponse("ride: %s, user to be added: %s" % (ride, user_id)) 
