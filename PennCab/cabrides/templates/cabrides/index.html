@@ -18,6 +18,10 @@
         <div class="container">
           <a class="brand" href="#">PennCab</a>
           <div class="nav-collapse collapse">
+             <form class="navbar-form pull-right" action="{% url 'cabrides:logout_view' %}" method="post">
+                {% csrf_token %}
+              <button type="submit" class="btn btn-inverse">Logout</button>
+             </form>
           </div>
         </div>
       </div>
@@ -74,6 +78,12 @@
 {% else %}
     <p>No Rides are available.</p>
 {% endif %}
+    
+    <hr>
+      <footer>
+        <p>Created with Django and Bootstrap</p>
+      </footer>
+
 </div> <!-- container -->
 </body>
 

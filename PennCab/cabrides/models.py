@@ -2,6 +2,20 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+"""
+from django.contrib.auth.models import (
+    BaseUserManager, AbstractBaseUser
+)
+
+def MyUserManager(BaseUserManager):
+    def create_user(self, first_name, last_name, phone_number, email, password=None, photo)
+
+    if not email or if not phone_number:
+        raise ValueError('User must have email and phon number')
+
+    user = self.model(
+       
+""" 
 
 class User(models.Model):
     first_name = models.CharField(max_length=100)
@@ -13,7 +27,6 @@ class User(models.Model):
 
     def __unicode__(self):
         return "%s %s" % (self.first_name, self.last_name)
-
 
 class Ride(models.Model):
     ride_owner = models.ForeignKey(User, related_name="owner_of")
