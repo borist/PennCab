@@ -122,3 +122,22 @@ def add_rider(request, ride_id):
                 return redirect('/cabrides/')
             except Error:
                 return HttpResponse("Something went wrong trying to remove user")
+
+
+def search(request):
+    term = request.POST['search-term']
+    if term == '':
+        return redirect('/cabrides/')
+    return search_term(request, term)
+
+def search_term(request, term):
+    user = request.user
+    search_rides = Ride.objects.filter(
+        destination__contains=term).order_by('ride_date')
+    rides_tup = [(ride, ride.is_participant(user), ride.is_owner(user)) 
+        for ride in search_rides]
+    context = {
+        'latest_rides': rides_tup,
+        'user_name': request.user.first_name,
+    }
+    return render(request, 'cabrides/index.html', context)

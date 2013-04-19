@@ -12,7 +12,8 @@
         margin-right: 10px;
       }
       .navbar-inverse .navbar-search .search-query {
-        margin-top: 5px;
+        margin-top: 3px;
+        height: 25px;
         /*background-color: #fff;*/
       }
     </style>
@@ -38,8 +39,9 @@
             <div class="pull-right">
               <ul class="nav">
                 <li>
-                  <form class="navbar-search pull-left">
-                    <input type="text" class="search-query" placeholder="Search">
+                  <form class="navbar-search pull-left" action="{% url 'cabrides:search' %}" method="post">
+                    {% csrf_token %}
+                    <input name="search-term" type="text" class="search-query" placeholder="Search by destination">
                   </form>
                 </li>
                 <li><a href="{% url 'cabrides:logout_user' %}">Logout</a></li>
@@ -99,6 +101,8 @@
                           <button name="drop" type="submit" class="btn btn-danger pull-right">Leave This Ride</button>
                           {% elif ride_tup.0.num_available_spots > 0 %}
                           <button name="join" type="submit" class="btn btn-primary pull-right">Join This Ride</button>
+                          {% else %}
+                          <button type="disabled" class="btn btn-primary disabled pull-right" disabled="disabled">Ride is Full</button>
                           {% endif %}
                           </form>
                   </div>
@@ -113,7 +117,7 @@
     
     <hr>
       <footer>
-        <p>Created with Django and Bootstrap</p>
+        <p>Created by Boris Treskunov with <a href="http://www.djangoproject.com">Django</a> and <a href="http://twitter.github.com/bootstrap">Bootstrap</a></p>
       </footer>
 
 </div> <!-- container -->
