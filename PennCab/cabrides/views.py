@@ -60,7 +60,18 @@ def signup(request):
 
 
 def signup_user(request):
-    return HttpResponse("Signup user!")
+    first_name = request.POST['first_name']
+    last_name = request.POST['last_name']
+    phone_number = request.POST['phone_number']
+    email = request.POST['email']
+    password1 = request.POST['password1']
+    if (first_name == '' or last_name == '' or phone_number == ''
+        or email == '' or password1 == ''):
+        return HttpResponse("Please fill in all the fields!")
+    else:
+        CabUser.objects.create_user(first_name, last_name,
+            phone_number, email, password1)
+        return redirect('/cabrides/')
 
 
 def new_ride(request):

@@ -34,18 +34,70 @@
 	    	<input name="last_name" type="text">
 
 	    	<label>Phone number*</label>
-	    	<input style="width:14%" name="phone_number" type="text" placeholder="###-###-####">
+	    	<input id="pnInput" style="width:14%" name="phone_number" type="text" placeholder="###-###-####">
 
-	    	<label>Email address*</label>
-	    	<input name="email" type="text">
+	    	<div class="control-group">
+	    	<label for="emailInput">Email address*</label>
+	    	<input id="emailInput" name="email" type="text">
+	    	<span id="emailErrorHelp" class="help-inline hidden">Please enter a valid Penn email.</span>
+			</div>
 
+			<div class="control-group">
 	    	<label>Password*</label>
-	    	<input name="password1" type="password">
+	    	<input id="p1" name="password1" type="password">
+	    	<span id="p1ErrorHelp" class="help-inline hidden">Your Password do not match!</span>
+	    	</div>
 
+	    	<div class="control-group">
 	    	<label>Confirm Password*</label>
-	    	<input name="password2" type="password"> <br/>
+	    	<input id="p2" name="password2" type="password"> 
+	    	</div>
+	    	<br/>
 
-	    	<button style="margin-top: 10px" type="submit" class="btn btn-primary">Submit</button>
+	    	<button style="margin-top: 10px" type="submit" id="submit-button" class="btn btn-primary">Submit</button>
 		</form>
 	</div>
+
+	<script src="{% static 'cabrides/js/jquery.js' %}"></script>
+	<script src="{% static 'cabrides/js/bootstrap.js' %}"></script>
+	<script>
+		$(document).ready(function() {
+		    $('#pnInput').keydown(function(event) {
+		        // Allow: backspace, delete, tab, escape, and enter
+		        if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || 
+		             // Allow: Ctrl+A
+		            (event.keyCode == 65 && event.ctrlKey === true) || 
+		             // Allow: home, end, left, right
+		            (event.keyCode >= 35 && event.keyCode <= 39)) {
+		                 return;
+		        }
+		        else {
+		            // Ensure that it is a number and stop the keypress
+		            if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105 )
+		            	|| $('#pnInput').val().length >= 12) {
+		                event.preventDefault();
+		            }   
+		        }
+
+		        if($('#pnInput').val().length == 3 || $('#pnInput').val().length == 7) {
+		            event.target.value = event.target.value + "-";
+		       }
+		    });
+
+		    $("form").submit(function(){
+		    	var all_good = true;
+		    	if ($('#emailInput').val().indexOf("upenn") < 0) {
+		    		$('#emailInput').parent('div').addClass('error');
+		    		$('#emailErrorHelp').removeClass('hidden');
+		    		all_good = false;
+		    	} else if ($('#p1').val() != $('#p2').val()) {
+		    		$('#p1').parent('div').addClass('error');
+		    		$('#p2').parent('div').addClass('error');
+		    		$('#p1ErrorHelp').removeClass('hidden');
+		    		all_good = false;
+		    	}
+		    	return all_good;
+		    })
+		});
+	</script>
 </body>
