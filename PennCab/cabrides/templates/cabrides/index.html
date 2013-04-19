@@ -11,6 +11,10 @@
       .new-ride {
         margin-right: 10px;
       }
+      .navbar-inverse .navbar-search .search-query {
+        margin-top: 5px;
+        /*background-color: #fff;*/
+      }
     </style>
 
 </head>
@@ -19,16 +23,28 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="#">PennCab</a>
+          <a class="brand" href="{% url 'cabrides:index' %}">PennCab</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="#">My Rides</a></li>
+              {% if user_rides %}
+              <li class="active">
+              {% else %}
+              <li>
+              {% endif %}
+                <a href="{% url 'cabrides:view_user' %}">{{ user_name }}'s Rides</a></li>
+              <li><a href="{% url 'cabrides:new_ride' %}">Create new ride!</a></li>
             </ul>
-             <form class="navbar-form pull-right" action="{% url 'cabrides:navbar_item' %}" method="post">
-                {% csrf_token %}
-              <button name="new_ride" type="submit" class="btn new-ride">Create a new taxi ride!</button>
-              <button name="logout" type="submit" class="btn btn-inverse">Logout</button>
-             </form>
+
+            <div class="pull-right">
+              <ul class="nav">
+                <li>
+                  <form class="navbar-search pull-left">
+                    <input type="text" class="search-query" placeholder="Search">
+                  </form>
+                </li>
+                <li><a href="{% url 'cabrides:logout_user' %}">Logout</a></li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -46,7 +62,7 @@
                         Leaving from: <b>{{ ride_tup.0.origin }}</b><br/>
                         On: <b>{{ ride_tup.0.ride_date|date:'l, F d Y' }}</b> at <b>{{ ride_tup.0.ride_date|date:'H:i A' }}</b><br/>
                         Owner: <b>{{ ride_tup.0.ride_owner }}</b><br/>
-                        Max Riders: <b>{{ ride_tup.0.max_riders }}</b>
+                        Available Spots: <b>{{ ride_tup.0.num_available_spots }}</b>
                   </div>
                   <div class="span7">
                         Riders: <br/>
@@ -56,7 +72,7 @@
                               <th>#</th>
                               <th>First Name</th>
                               <th>Last Name</th>
-                              {% if not ride_tup.1 %}
+                              {% if ride_tup.1 %}
                               <th>Phone Number</th>
                               {% endif %}
                             </tr>
@@ -67,7 +83,7 @@
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ rider.first_name }}</td>
                                 <td>{{ rider.last_name }}</td>
-                                {% if not ride_tup.1 %}
+                                {% if ride_tup.1 %}
                                 <td>{{ rider.phone_number }}</td>
                                 {% endif %}
                               </tr>
@@ -75,19 +91,16 @@
                           </tbody>
                         </table>
 
-
-                        {% if ride_tup.0.num_available_spots > 0 %}
                           <form action="{% url 'cabrides:add_rider' ride_tup.0.id %}" method="post">
                           {% csrf_token %}
-                          {% if ride_tup.1 %}
-                          <button name="join" type="submit" class="btn btn-primary pull-right">Join This Ride</button>
-                          {% elif ride_tup.2 %}
+                          {% if ride_tup.2 %}
                           <button name="drop" type="submit" class="btn btn-danger pull-right">Delete This Ride</button>
-                          {% else %}
+                          {% elif ride_tup.1 %}
                           <button name="drop" type="submit" class="btn btn-danger pull-right">Leave This Ride</button>
+                          {% elif ride_tup.0.num_available_spots > 0 %}
+                          <button name="join" type="submit" class="btn btn-primary pull-right">Join This Ride</button>
                           {% endif %}
                           </form>
-                        {% endif %}
                   </div>
               </div>
           </div>

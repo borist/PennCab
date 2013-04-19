@@ -24,7 +24,7 @@
 
 <body>
 	<div class="container">
-		<form class="form-signup" action="{% url 'cabrides:login_user' %}" method="post">
+		<form class="form-signup" action="{% url 'cabrides:signup_user' %}" method="post">
 	    {% csrf_token %}
 	    <legend>Create Account Below</legend>
 			<label>First name*</label>

@@ -2,6 +2,9 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="{% static 'cabrides/style/bootstrap.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'cabrides/style/bootstrap-responsive.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'cabrides/style/datepicker.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'cabrides/style/timepicker.css' %}" />
+
 	<style type="text/css">
       body {
         padding-top: 30px;
@@ -29,15 +32,17 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="#">PennCab</a>
+          <a class="brand" href="{% url 'cabrides:index' %}">PennCab</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="#">My Rides</a></li>
+              <li class="active"><a href="{% url 'cabrides:view_user' %}">{{ user_name }}'s Rides</a></li>
             </ul>
-             <form class="navbar-form pull-right" action="{% url 'cabrides:navbar_item' %}" method="post">
-                {% csrf_token %}
-              <button name="logout" type="submit" class="btn btn-inverse">Logout</button>
-             </form>
+
+            <div class="pull-right">
+              <ul class="nav">
+                <li class="active"><a href="{% url 'cabrides:logout_user' %}">Logout</a></li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -55,16 +60,38 @@
 	    	<input class="long" name="destination" type="text" placeholder="What is your cab's final destination?">
 
 	    	<label>Date*</label>
-	    	<input name="date" type="text" placeholder="mm/dd/yyyy">
+	    	<input id="dp" name="date" type="text" value={% now 'm/d/Y' %}>
 
 	    	<label>Time*</label>
-	    	<input name="time" type="text" placeholder="##:## AM/PM">
-	    	<span class="help-block">Please use the format: '##:## AM/PM'</span>
+	    	<div class="bootstrap-timepicker">
+	    		<input id="tp" name="time" type="text" value={% now 'h:iA' %} class="input-small">
+	    		<i class="icon-time"></i>
+	    	</div>
 
-	    	<label>Max Number of Passenger:*</label>
+	    	<label>Max Number of Passenger*</label>
 	    	<input name="max_riders" type="text" value="4"> <br/>
 
 	    	<button style="margin-top: 10px" type="submit" class="btn btn-primary">Create Ride</button>
 		</form>
 	</div>
+
+
+	<script src="{% static 'cabrides/js/jquery.js' %}"></script>
+	<script src="{% static 'cabrides/js/bootstrap.js' %}"></script>
+	<script src="{% static 'cabrides/js/bootstrap-datepicker.js' %}"></script>
+	<script src="{% static 'cabrides/js/bootstrap-timepicker.js' %}"></script>
+
+	<script>
+	$('#dp').datepicker({
+				autoclose: true
+			});
+		$(function(){
+
+			$('#tp').timepicker({
+				template: false,
+				showInputs: false,
+				minuteStep: 5
+			});
+		});
+	</script>
 </body>

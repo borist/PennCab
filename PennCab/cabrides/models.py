@@ -81,17 +81,13 @@ class Ride(models.Model):
         return "Ride to: %s, owned by %s" % (self.destination, self.ride_owner)
 
     def num_available_spots(self):
-        num = self.max_riders - self.participants.count()
-        if num <= 0:
-            return None
-        else:
-            return range(num)
+        return self.max_riders - self.participants.count()
 
     def ride_in_past(self):
         return self.ride_date < timezone.now()
 
     def is_participant(self, cabuser):
-        return self.participants.filter(email=cabuser.email).count() is 0
+        return self.participants.filter(email=cabuser.email).count() is not 0
 
     def is_owner(self, cabuser):
         return self.ride_owner == cabuser
