@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 
 from cabrides.models import CabUser, Ride
 
+
 @login_required(login_url='/cabrides/login')
 def index(request):
     latest_cab_rides = Ride.objects.order_by('ride_date')
@@ -19,9 +20,11 @@ def index(request):
 
 
 def view_user(request):
+    user = request.user
     latest_user_rides = Ride.objects.filter(
-        ride_owner=request.user).order_by('ride_date')
-    latest_rides_tup = [(ride, True, True) for ride in latest_user_rides]
+        participants__email=user.email).order_by('ride_date')
+    latest_rides_tup = [(ride, True, ride.is_owner(user)) 
+        for ride in latest_user_rides]
     context = {
         'latest_rides': latest_rides_tup,
         'user_name': request.user.first_name,
@@ -128,7 +131,7 @@ def search(request):
     term = request.POST['search-term']
     if term == '':
         return redirect('/cabrides/')
-    return search_term(request, term)
+    return redirect('/cabrides/search/%s' % term)
 
 def search_term(request, term):
     user = request.user
