@@ -75,7 +75,7 @@ def signup_user(request):
         or email == '' or password1 == ''):
         return HttpResponse("Please fill in all the fields!")
     else:
-        CabUser.objects.create_user(first_name.upper(), last_name.upper(),
+        CabUser.objects.create_user(first_name.title(), last_name.title(),
             phone_number, email, password1)
         return redirect('/cabrides/')
 
@@ -98,7 +98,7 @@ def create_ride(request):
             datetime_string = ' '.join([date, time])
             max_riders = request.POST['max_riders']
             date_object = datetime.strptime(datetime_string, '%m/%d/%Y %I:%M %p')
-            new_ride = Ride(origin=origin.upper(), destination=destination.upper(),
+            new_ride = Ride(origin=origin, destination=destination,
                 ride_owner=request.user, max_riders=max_riders, ride_date=date_object)
             new_ride.save()
             new_ride.participants.add(request.user)

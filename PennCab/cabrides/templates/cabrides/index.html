@@ -69,7 +69,13 @@
                   <div class="span4">
                         Leaving from: <b>{{ ride_tup.0.origin }}</b><br/>
                         On: <b>{{ ride_tup.0.ride_date|date:'l, F d Y' }}</b> at <b>{{ ride_tup.0.ride_date|date:'H:i A' }}</b><br/>
-                        Owner: <b>{{ ride_tup.0.ride_owner }}</b><br/>
+                        Owner: <b>
+                          {% if user.is_authenticated %}
+                            {{ ride_tup.0.ride_owner }}
+                          {% else %}
+                             Passenger 1
+                          {% endif %}
+                          </b><br/>
                         Available Spots: <b>{{ ride_tup.0.num_available_spots }}</b>
                   </div>
                   <div class="span7">
@@ -80,7 +86,7 @@
                               <th>#</th>
                               <th>First Name</th>
                               <th>Last Name</th>
-                              {% if ride_tup.1 %}
+                              {% if user.is_authenticated and ride_tup.1 %}
                               <th>Phone Number</th>
                               {% endif %}
                             </tr>

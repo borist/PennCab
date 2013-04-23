@@ -61,7 +61,7 @@ class CabUser(AbstractBaseUser):
         return True
 
     def __unicode__(self):
-        return "%s %s" % (self.first_name, self.last_name)
+        return "%s %s" % (self.first_name.title(), self.last_name.title())
 
     @property
     def is_staff(self):
@@ -87,7 +87,8 @@ class Ride(models.Model):
         return self.ride_date < timezone.now()
 
     def is_participant(self, cabuser):
-        return not cabuser or self.participants.filter(email=cabuser.email).count() is not 0
+        return (cabuser.is_anonymous() or
+            self.participants.filter(email=cabuser.email).count() is not 0)
 
     def is_owner(self, cabuser):
         return self.ride_owner == cabuser

@@ -40,7 +40,7 @@
           <div class="nav-collapse collapse">
             <ul class="nav">
                 {% if user.is_authenticated %}
-              	<li><a href="{% url 'cabrides:view_user' %}">{{ user.first_name }}'s Rides</a></li> 
+              	<li><a href="{% url 'cabrides:view_user' %}">{{ user.first_name.title }}'s Rides</a></li> 
                 <li class="active"><a href="#">Create new ride!</a></li>
               {% endif %}
             </ul>
