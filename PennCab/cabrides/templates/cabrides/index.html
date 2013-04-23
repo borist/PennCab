@@ -53,7 +53,7 @@
             <div class="pull-right">
               <ul class="nav">
                 <li> <button id="collapse-all" class="btn" onclick="collapseAll()" style="margin-right:5px; margin-top:8px;">
-                  <i id="collapse-all-button" class="icon-arrow-up"></i></button>
+                  <i id="collapse-all-button" class="icon-chevron-up"></i></button>
                 </li>
                 <li>
                   <form class="navbar-search pull-left" action="{% url 'cabrides:search' %}" method="post">
@@ -220,13 +220,13 @@
       {% if latest_rides %}
       {% for ride_tup in latest_rides %}
         $("#demo{{ forloop.counter }}").collapse('toggle');
-        if (arrowUp) {
-          $('#collapse-all-button').removeClass('icon-arrow-up').addClass('icon-arrow-down');
+      {% endfor %}
+      if (arrowUp) {
+          $('#collapse-all-button').removeClass('icon-chevron-up').addClass('icon-chevron-down');
         } else {
-          $('#collapse-all-button').removeClass('icon-arrow-down').addClass('icon-arrow-up');
+          $('#collapse-all-button').removeClass('icon-chevron-down').addClass('icon-chevron-up');
         }
         arrowUp = !arrowUp;
-      {% endfor %}
       {% endif %}
     }
 
