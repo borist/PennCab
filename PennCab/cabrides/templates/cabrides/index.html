@@ -17,11 +17,18 @@
         height: 25px;
         /*background-color: #fff;*/
       }
+      .accordion-group, .accordion-inner {
+        border: none;
+      }
+      .accordion-heading .accordion-toggle {
+        padding: 0px;
+      }
     </style>
 
 </head>
 
 <body>
+  <!-- Navigation Bar -->
 <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
@@ -113,20 +120,37 @@
                         </table>
 
                           <form action="{% url 'cabrides:add_rider' ride_tup.0.id %}" method="post">
-                          {% csrf_token %}
-                          {% if not user.is_authenticated %}
-                          <button type="disabled" class="btn btn-primary disabled pull-right" disabled="disabled">Sign in to join!</button>
-                          {% elif ride_tup.2 %}
-                          <button name="drop" type="submit" class="btn btn-danger pull-right">Delete This Ride</button>
-                          {% elif ride_tup.1 %}
-                          <button name="drop" type="submit" class="btn btn-danger pull-right">Leave This Ride</button>
-                          {% elif ride_tup.0.num_available_spots > 0 %}
-                          <button name="join" type="submit" class="btn btn-primary pull-right">Join This Ride</button>
-                          {% else %}
-                          <button type="disabled" class="btn btn-primary disabled pull-right" disabled="disabled">Ride is Full</button>
-                          {% endif %}
+                            {% csrf_token %}
+                            {% if not user.is_authenticated %}
+                            <button type="disabled" class="btn btn-primary disabled pull-right" disabled="disabled">Sign in to join!</button>
+                            {% elif ride_tup.2 %}
+                            <button name="drop" type="submit" class="btn btn-danger pull-right">Delete This Ride</button>
+                            {% elif ride_tup.1 %}
+                            <button name="drop" type="submit" class="btn btn-danger pull-right">Leave This Ride</button>
+                            {% elif ride_tup.0.num_available_spots > 0 %}
+                            <button name="join" type="submit" class="btn btn-primary pull-right">Join This Ride</button>
+                            {% else %}
+                            <button type="disabled" class="btn btn-primary disabled pull-right" disabled="disabled">Ride is Full</button>
+                            {% endif %}
                           </form>
                   </div>
+              </div>
+
+              <div class="row">
+                <div class="span11 accordion" id="accordion{{ ride_tup.0.id }}">
+                  <div class="accordion-group">
+                    <div class="accordion-heading">
+                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion{{ ride_tup.0.id }}" href="#collapse{{ ride_tup.0.id }}">
+                        View More Trip Details
+                      </a>
+                    </div>
+                    <div id="collapse{{ ride_tup.0.id }}" class="accordion-body collapse in">
+                      <div class="accordion-inner">
+                        <div style="height: 100%" id="map-canvas"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
           </div>
         </div>
@@ -135,12 +159,15 @@
 {% else %}
     <p>No Rides are available.</p>
 {% endif %}
-    
     <hr>
       <footer>
         <p>Created by Boris Treskunov with <a href="http://www.djangoproject.com">Django</a> and <a href="http://twitter.github.com/bootstrap">Bootstrap</a></p>
       </footer>
 
 </div> <!-- container -->
+
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+  <script src="{% static 'cabrides/js/jquery.js' %}"></script>
+  <script src="{% static 'cabrides/js/bootstrap.js' %}"></script>
 </body>
 
