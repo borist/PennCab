@@ -87,7 +87,7 @@ class Ride(models.Model):
         return self.ride_date < timezone.now()
 
     def is_participant(self, cabuser):
-        return self.participants.filter(email=cabuser.email).count() is not 0
+        return not cabuser or self.participants.filter(email=cabuser.email).count() is not 0
 
     def is_owner(self, cabuser):
         return self.ride_owner == cabuser

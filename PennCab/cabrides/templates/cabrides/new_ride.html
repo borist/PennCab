@@ -24,7 +24,11 @@
       .long {
       	width: 30%;
       }
-
+	.navbar-inverse .navbar-search .search-query {
+        margin-top: 3px;
+        height: 25px;
+        /*background-color: #fff;*/
+      }
     </style>
 </head>
 
@@ -35,12 +39,25 @@
           <a class="brand" href="{% url 'cabrides:index' %}">PennCab</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="{% url 'cabrides:view_user' %}">{{ user_name }}'s Rides</a></li>
+                {% if user.is_authenticated %}
+              	<li><a href="{% url 'cabrides:view_user' %}">{{ user.first_name }}'s Rides</a></li> 
+                <li class="active"><a href="#">Create new ride!</a></li>
+              {% endif %}
             </ul>
 
             <div class="pull-right">
               <ul class="nav">
-                <li class="active"><a href="{% url 'cabrides:logout_user' %}">Logout</a></li>
+                <li>
+                  <form class="navbar-search pull-left" action="{% url 'cabrides:search' %}" method="post">
+                    {% csrf_token %}
+                    <input name="search-term" type="text" class="search-query" placeholder="Search by destination">
+                  </form>
+                </li>
+                {% if user.is_authenticated %}
+                  <li><a href="{% url 'cabrides:logout_user' %}">Logout</a></li>
+                {% else %}
+                  <li><a href="{% url 'cabrides:login' %}">Sign in</a></li>
+                {% endif %}
               </ul>
             </div>
           </div>

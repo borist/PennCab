@@ -27,13 +27,15 @@
           <a class="brand" href="{% url 'cabrides:index' %}">PennCab</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              {% if user_rides %}
-              <li class="active">
-              {% else %}
-              <li>
+              {% if user.is_authenticated %}
+                {% if user_rides %}
+                <li class="active">
+                {% else %}
+                <li>
+                {% endif %}
+                <a href="{% url 'cabrides:view_user' %}">{{ user.first_name }}'s Rides</a></li> 
+                <li><a href="{% url 'cabrides:new_ride' %}">Create new ride!</a></li>
               {% endif %}
-                <a href="{% url 'cabrides:view_user' %}">{{ user_name }}'s Rides</a></li>
-              <li><a href="{% url 'cabrides:new_ride' %}">Create new ride!</a></li>
             </ul>
 
             <div class="pull-right">
@@ -44,7 +46,11 @@
                     <input name="search-term" type="text" class="search-query" placeholder="Search by destination">
                   </form>
                 </li>
-                <li><a href="{% url 'cabrides:logout_user' %}">Logout</a></li>
+                {% if user.is_authenticated %}
+                  <li><a href="{% url 'cabrides:logout_user' %}">Logout</a></li>
+                {% else %}
+                  <li><a href="{% url 'cabrides:login' %}">Sign in</a></li>
+                {% endif %}
               </ul>
             </div>
           </div>
@@ -82,11 +88,17 @@
                           <tbody>
                             {% for rider in ride_tup.0.participants.all %}
                               <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ rider.first_name }}</td>
-                                <td>{{ rider.last_name }}</td>
-                                {% if ride_tup.1 %}
-                                <td>{{ rider.phone_number }}</td>
+                                {% if user.is_authenticated %}
+                                  <td>{{ forloop.counter }}</td>
+                                  <td>{{ rider.first_name }}</td>
+                                  <td>{{ rider.last_name }}</td>
+                                  {% if ride_tup.1 %}
+                                  <td>{{ rider.phone_number }}</td>
+                                  {% endif %}
+                                {% else %}
+                                  <td>{{ forloop.counter }}</td>
+                                  <td>Passenger</td>
+                                  <td>{{ forloop.counter }}</td>
                                 {% endif %}
                               </tr>
                             {% endfor %}
@@ -95,7 +107,9 @@
 
                           <form action="{% url 'cabrides:add_rider' ride_tup.0.id %}" method="post">
                           {% csrf_token %}
-                          {% if ride_tup.2 %}
+                          {% if not user.is_authenticated %}
+                          <button type="disabled" class="btn btn-primary disabled pull-right" disabled="disabled">Sign in to join!</button>
+                          {% elif ride_tup.2 %}
                           <button name="drop" type="submit" class="btn btn-danger pull-right">Delete This Ride</button>
                           {% elif ride_tup.1 %}
                           <button name="drop" type="submit" class="btn btn-danger pull-right">Leave This Ride</button>

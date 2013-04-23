@@ -6,19 +6,22 @@ from django.contrib.auth.decorators import login_required
 from cabrides.models import CabUser, Ride
 
 
-@login_required(login_url='/cabrides/login')
 def index(request):
     latest_cab_rides = Ride.objects.order_by('ride_date')
     user = request.user
-    latest_rides_tup = [(ride, ride.is_participant(user), ride.is_owner(user)) 
-        for ride in latest_cab_rides]
+    if user.is_authenticated:
+        latest_rides_tup = [(ride, ride.is_participant(user), ride.is_owner(user)) 
+            for ride in latest_cab_rides]
+    else:
+        latest_rides_tup = [(ride, False, False) for ride in latest_cab_rides]
     context = {
         'latest_rides': latest_rides_tup, 
-        'user_name': request.user.first_name
+        'user': request.user
     }
     return render(request, 'cabrides/index.html', context)
 
 
+@login_required(login_url='/cabrides/login')
 def view_user(request):
     user = request.user
     latest_user_rides = Ride.objects.filter(
@@ -27,7 +30,7 @@ def view_user(request):
         for ride in latest_user_rides]
     context = {
         'latest_rides': latest_rides_tup,
-        'user_name': request.user.first_name,
+        'user': request.user,
         'user_rides': True
     }
     return render(request, 'cabrides/index.html', context)
@@ -55,7 +58,7 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    return redirect('/cabrides/login/')
+    return redirect('/cabrides/')
 
 
 def signup(request):
@@ -72,13 +75,13 @@ def signup_user(request):
         or email == '' or password1 == ''):
         return HttpResponse("Please fill in all the fields!")
     else:
-        CabUser.objects.create_user(first_name, last_name,
+        CabUser.objects.create_user(first_name.upper(), last_name.upper(),
             phone_number, email, password1)
         return redirect('/cabrides/')
 
 
 def new_ride(request):
-    context = {'user_name': request.user.first_name}
+    context = {'user': request.user}
     return render(request, 'cabrides/new_ride.html', context)
 
 
@@ -95,7 +98,7 @@ def create_ride(request):
             datetime_string = ' '.join([date, time])
             max_riders = request.POST['max_riders']
             date_object = datetime.strptime(datetime_string, '%m/%d/%Y %I:%M %p')
-            new_ride = Ride(origin=origin, destination=destination,
+            new_ride = Ride(origin=origin.upper(), destination=destination.upper(),
                 ride_owner=request.user, max_riders=max_riders, ride_date=date_object)
             new_ride.save()
             new_ride.participants.add(request.user)
@@ -133,14 +136,18 @@ def search(request):
         return redirect('/cabrides/')
     return redirect('/cabrides/search/%s' % term)
 
+
 def search_term(request, term):
     user = request.user
     search_rides = Ride.objects.filter(
         destination__contains=term).order_by('ride_date')
-    rides_tup = [(ride, ride.is_participant(user), ride.is_owner(user)) 
-        for ride in search_rides]
+    if user.is_authenticated:
+        rides_tup = [(ride, ride.is_participant(user), ride.is_owner(user)) 
+            for ride in search_rides]
+    else:
+        rides_tup = [(ride, False, False) for ride in search_rides]
     context = {
         'latest_rides': rides_tup,
-        'user_name': request.user.first_name,
+        'user': request.user,
     }
     return render(request, 'cabrides/index.html', context)
