@@ -77,6 +77,8 @@ def signup_user(request):
     else:
         CabUser.objects.create_user(first_name.title(), last_name.title(),
             phone_number, email, password1)
+        user = authenticate(username=email, password=password1)
+        login(request, user)
         return redirect('/cabrides/')
 
 

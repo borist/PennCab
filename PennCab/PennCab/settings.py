@@ -161,7 +161,7 @@ LOGGING = {
 }
 
 
-# remove below if want to use with local postgresql database rather than heroku's
+# comment everything  below if want to use with local postgresql database rather than heroku's
 """
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
