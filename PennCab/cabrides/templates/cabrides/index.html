@@ -23,10 +23,6 @@
       .accordion-heading .accordion-toggle {
         padding: 0px;
       }
-      .directions-panel {
-        height: 100%;
-      }
-
       .map-canvas {
         height: 100%;
         width: 50%;
@@ -153,7 +149,8 @@
                     <div class="row" style="height: 50%;">
                       <div id="map-canvas{{ forloop.counter }}" class="span6 map-canvas"></div>
                       <div style="overflow: auto;" class="span4">
-                        <div class="directions-panel" id="directions-panel{{ forloop.counter }}"></div>
+                        Distance: <b id="dist{{ forloop.counter }}"></b><br/>
+                        Approximate time of travel: <b id="time{{ forloop.counter }}"></b><br/>
                       </div>
                     </div>
                   </div>
@@ -192,8 +189,7 @@
         var map = new google.maps.Map(document.getElementById('map-canvas{{ forloop.counter }}'), mapOptions);
         
         directionsDisplay.setMap(map);
-        directionsDisplay.setPanel(document.getElementById('directions-panel{{ forloop.counter }}'));
-        calcRoute("{{ ride_tup.0.origin }}", "{{ ride_tup.0.destination }}", directionsDisplay);
+        calcRoute("{{ ride_tup.0.origin }}", "{{ ride_tup.0.destination }}", directionsDisplay, {{ forloop.counter }});
         google.maps.event.addListenerOnce(map, 'idle', function(){
           $("#demo{{ forloop.counter }}").collapse('toggle');
         });
@@ -201,7 +197,7 @@
       {% endif %}
     }
 
-    function calcRoute(start, end, directionsDisplay) {
+    function calcRoute(start, end, directionsDisplay, i) {
       var request = {
         origin: start,
         destination: end,
@@ -209,6 +205,8 @@
       };
       directionsService.route(request, function(response, status) {
         if (status == google.maps.DirectionsStatus.OK) {
+          $('#dist'+i).html((response.routes[0].legs[0].distance.value*0.00062137119).toFixed(1) + " miles");
+          $('#time'+i).html((response.routes[0].legs[0].duration.value/60).toFixed(1) + " minutes");
           directionsDisplay.setDirections(response);
         }
       });

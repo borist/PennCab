@@ -9,10 +9,9 @@ from cabrides.models import CabUser, Ride
 def index(request):
     latest_cab_rides = Ride.objects.order_by('ride_date')
     user = request.user
-    # NEED TO FILTER OUT RIDES IN PAST!
     if user.is_authenticated:
         latest_rides_tup = [(ride, ride.is_participant(user), ride.is_owner(user))
-            for ride in latest_cab_rides]
+            for ride in latest_cab_rides if not ride.ride_in_past()]
     else:
         latest_rides_tup = [(ride, False, False) for ride in latest_cab_rides]
     context = {
@@ -28,7 +27,7 @@ def view_user(request):
     latest_user_rides = Ride.objects.filter(
         participants__email=user.email).order_by('ride_date')
     latest_rides_tup = [(ride, True, ride.is_owner(user)) 
-        for ride in latest_user_rides]
+        for ride in latest_user_rides if not ride.ride_in_past()]
     context = {
         'latest_rides': latest_rides_tup,
         'user': request.user,
@@ -144,7 +143,7 @@ def search_term(request, term):
         destination__contains=term).order_by('ride_date')
     if user.is_authenticated:
         rides_tup = [(ride, ride.is_participant(user), ride.is_owner(user)) 
-            for ride in search_rides]
+            for ride in search_rides if not ride.ride_in_past()]
     else:
         rides_tup = [(ride, False, False) for ride in search_rides]
     context = {
