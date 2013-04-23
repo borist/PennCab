@@ -23,6 +23,14 @@
       .accordion-heading .accordion-toggle {
         padding: 0px;
       }
+      .directions-panel {
+        height: 100%;
+      }
+
+      .map-canvas {
+        height: 100%;
+        width: 50%;
+      }
     </style>
 
 </head>
@@ -69,7 +77,6 @@
 <div class="container">
 {% if latest_rides %}
     {% for ride_tup in latest_rides %}
-      {% if not ride_tup.0.ride_in_past %}
         <div class="hero-unit">
           <div class="container">
               <h2>Cab to {{ ride_tup.0.destination }}</h2>
@@ -137,24 +144,24 @@
               </div>
 
               <div class="row">
-                <div class="span11 accordion" id="accordion{{ ride_tup.0.id }}">
-                  <div class="accordion-group">
-                    <div class="accordion-heading">
-                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion{{ ride_tup.0.id }}" href="#collapse{{ ride_tup.0.id }}">
-                        View More Trip Details
-                      </a>
-                    </div>
-                    <div id="collapse{{ ride_tup.0.id }}" class="accordion-body collapse in">
-                      <div class="accordion-inner">
-                        <div style="height: 100%" id="map-canvas"></div>
+                <div class="span11">
+                  <button style="font-size: 18px; font-weight: 200;" type="button" class="btn btn-link" data-toggle="collapse" data-target="#demo{{ forloop.counter }}">
+                    View More Trip Details
+                  </button>
+                   
+                  <div id="demo{{ forloop.counter }}" class="collapse in">
+                    <div class="row" style="height: 50%;">
+                      <div id="map-canvas{{ forloop.counter }}" class="span6 map-canvas"></div>
+                      <div style="overflow: auto;" class="span4">
+                        <div class="directions-panel" id="directions-panel{{ forloop.counter }}"></div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+
           </div>
         </div>
-      {% endif %}
     {% endfor %}
 {% else %}
     <p>No Rides are available.</p>
@@ -169,5 +176,44 @@
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
   <script src="{% static 'cabrides/js/jquery.js' %}"></script>
   <script src="{% static 'cabrides/js/bootstrap.js' %}"></script>
-</body>
+  <script>
+    
+    var directionsService = new google.maps.DirectionsService();
 
+    function initialize() {
+      var mapOptions = {
+        zoom: 8,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+
+      {% if latest_rides %}
+      {% for ride_tup in latest_rides %}
+        var directionsDisplay = new google.maps.DirectionsRenderer();
+        var map = new google.maps.Map(document.getElementById('map-canvas{{ forloop.counter }}'), mapOptions);
+        
+        directionsDisplay.setMap(map);
+        directionsDisplay.setPanel(document.getElementById('directions-panel{{ forloop.counter }}'));
+        calcRoute("{{ ride_tup.0.origin }}", "{{ ride_tup.0.destination }}", directionsDisplay);
+        google.maps.event.addListenerOnce(map, 'idle', function(){
+          $("#demo{{ forloop.counter }}").collapse('toggle');
+        });
+      {% endfor %}
+      {% endif %}
+    }
+
+    function calcRoute(start, end, directionsDisplay) {
+      var request = {
+        origin: start,
+        destination: end,
+        travelMode: google.maps.DirectionsTravelMode.DRIVING
+      };
+      directionsService.route(request, function(response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+          directionsDisplay.setDirections(response);
+        }
+      });
+    }
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+</body>

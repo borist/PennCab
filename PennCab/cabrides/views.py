@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, render_to_response
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
@@ -9,8 +9,9 @@ from cabrides.models import CabUser, Ride
 def index(request):
     latest_cab_rides = Ride.objects.order_by('ride_date')
     user = request.user
+    # NEED TO FILTER OUT RIDES IN PAST!
     if user.is_authenticated:
-        latest_rides_tup = [(ride, ride.is_participant(user), ride.is_owner(user)) 
+        latest_rides_tup = [(ride, ride.is_participant(user), ride.is_owner(user))
             for ride in latest_cab_rides]
     else:
         latest_rides_tup = [(ride, False, False) for ride in latest_cab_rides]
