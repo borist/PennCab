@@ -14,5 +14,5 @@ urlpatterns = patterns('',
     url(r'^(?P<ride_id>\d+)/$', views.add_rider, name='add_rider'),
     url(r'^view_user/$', views.view_user, name='view_user'),
     url(r'^search/$', views.search, name='search'),
-    url(r'^search/(?P<term>[a-zA-z]+)/$', views.search_term, name='search_term'),
+    url(r'^search/(?P<term>[a-zA-z ]+)/$', views.search_term, name='search_term'),
     )

@@ -76,7 +76,7 @@
 <div class="container">
 {% if latest_rides %}
     {% for ride_tup in latest_rides %}
-        <div class="hero-unit">
+        <div class="hero-unit" {% if ride_tup.0.num_available_spots < 1 and not ride_tup.1 %} style="color: #999;" {% endif %}>
           <div class="container">
               <h2>Cab to {{ ride_tup.0.destination }}</h2>
               <div class="row">
@@ -94,7 +94,7 @@
                   </div>
                   <div class="span7">
                         Riders: <br/>
-                        <table class="table">
+                          <table class="table" {% if ride_tup.0.num_available_spots < 1 and not ride_tup.1 %} style="color: #999;" {% endif %}>
                           <thead>
                             <tr>
                               <th>#</th>
