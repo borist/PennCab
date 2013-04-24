@@ -63,6 +63,7 @@
 	<script src="{% static 'cabrides/js/bootstrap.js' %}"></script>
 	<script>
 		$(document).ready(function() {
+			// Validate phone number input to be only numbers and insert dashes
 		    $('#pnInput').keydown(function(event) {
 		        // Allow: backspace, delete, tab, escape, and enter
 		        if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || 
@@ -85,6 +86,8 @@
 		       }
 		    });
 
+		    // Upon submission, validate the email is a *.upenn.edu email and that the passwords match,
+		    // if not, display errors on html page
 		    $("form").submit(function(){
 		    	var all_good = true;
 		    	if ($('#emailInput').val().indexOf("upenn") < 0) {

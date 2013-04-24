@@ -177,10 +177,10 @@
   <script src="{% static 'cabrides/js/jquery.js' %}"></script>
   <script src="{% static 'cabrides/js/bootstrap.js' %}"></script>
   <script>
-    
     var directionsService = new google.maps.DirectionsService();
     var arrowUp = true;
 
+    // JavaScript to calculate routes for each cab ride
     function initialize() {
       var mapOptions = {
         zoom: 8,
@@ -194,9 +194,6 @@
         
         directionsDisplay.setMap(map);
         calcRoute("{{ ride_tup.0.origin }}", "{{ ride_tup.0.destination }}", directionsDisplay, {{ forloop.counter }});
-        // google.maps.event.addListenerOnce(map, 'idle', function(){
-        //   $("#demo{{ forloop.counter }}").collapse('toggle');
-        // });
       {% endfor %}
       {% endif %}
     }
@@ -216,6 +213,7 @@
       });
     }
 
+    // JavaScript for button to collapse (or expand) all detail views
     function collapseAll() {
       {% if latest_rides %}
       {% for ride_tup in latest_rides %}

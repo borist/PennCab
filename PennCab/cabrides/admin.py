@@ -40,6 +40,7 @@ class UserChangeForm(forms.ModelForm):
         return self.initial["password"]
 
 
+# Cr
 class MyUserAdmin(UserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
@@ -60,6 +61,6 @@ class MyUserAdmin(UserAdmin):
     filter_horizontal = ()
 
 
-admin.site.register(CabUser)#, MyUserAdmin)
+admin.site.register(CabUser)
 admin.site.register(Ride)
 admin.site.unregister(Group)

@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 
+# Custom user manager for our CabUser
 class MyUserManager(BaseUserManager):
     def create_user(self, first_name, last_name, phone_number, email, password=None):
         if not email or not phone_number:
@@ -32,6 +33,7 @@ class MyUserManager(BaseUserManager):
         return user
 
 
+# Define our own User for the app, CabUser
 class CabUser(AbstractBaseUser):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -68,6 +70,7 @@ class CabUser(AbstractBaseUser):
         return self.is_admin
 
 
+# Definition for a cab ride
 class Ride(models.Model):
     ride_owner = models.ForeignKey(CabUser, related_name="owner_of")
     participants = models.ManyToManyField(CabUser)

@@ -1,5 +1,9 @@
 from cabrides.models import CabUser
 
+"""
+Need to define custom user authentication since we used a customer User class
+for the project
+"""
 class CustomAuth(object):
     def authenticate(self, username=None, password=None):
         try:

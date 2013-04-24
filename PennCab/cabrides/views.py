@@ -6,6 +6,10 @@ from django.contrib.auth.decorators import login_required
 from cabrides.models import CabUser, Ride
 
 
+"""
+The index/home page, displays all cab rides that are in the future in order of
+increases date/time of occurence.
+"""
 def index(request):
     latest_cab_rides = Ride.objects.order_by('ride_date')
     user = request.user
@@ -21,6 +25,10 @@ def index(request):
     return render(request, 'cabrides/index.html', context)
 
 
+"""
+Filter out and view only cab rides that the currently logged in user is a participant
+(or owner) of. Require log in, otherwise redirect to login page.
+"""
 @login_required(login_url='/cabrides/login')
 def view_user(request):
     user = request.user
@@ -36,10 +44,17 @@ def view_user(request):
     return render(request, 'cabrides/index.html', context)
 
 
+"""
+Render the login page for the app.
+"""
 def login_page(request):
     return render(request, 'cabrides/login.html', {})
 
 
+"""
+Try to authenticate the user, and if successful log him in and redirect to
+the index page. If unsuccessful, return error page.
+"""
 def login_user(request):
     if 'signup' in request.POST:
         return redirect('/cabrides/signup/')
@@ -56,15 +71,26 @@ def login_user(request):
         return loggedin_index(request)
 
 
+"""
+Log out the currently logged in user and return to the index page.
+"""
 def logout_user(request):
     logout(request)
     return redirect('/cabrides/')
 
 
+"""
+Render the signup page for the app.
+"""
 def signup(request):
     return render(request, 'cabrides/signup.html', {})
 
 
+"""
+Try to sign up a user for an account. If any of the fields are blank or an error
+occurs, redirect to an error page. If successful, log the user in and redirect
+to the index page.
+"""
 def signup_user(request):
     first_name = request.POST['first_name']
     last_name = request.POST['last_name']
@@ -82,11 +108,19 @@ def signup_user(request):
         return redirect('/cabrides/')
 
 
+"""
+Render the page to create a new cab ride.
+"""
 def new_ride(request):
     context = {'user': request.user}
     return render(request, 'cabrides/new_ride.html', context)
 
 
+"""
+Attempt to create a new cab ride from the request. If an error occurs (such as some
+fields not being filled out), return an error page. Otherwise if the creation is
+successful, redirect back to the index page.
+"""
 def create_ride(request):
     from datetime import datetime
     try:
@@ -109,6 +143,10 @@ def create_ride(request):
         return HttpResponse("Not all fields were filled out.") 
 
 
+"""
+Attempt to add the logged in user to the ride with the given <ride_id>. If an
+error occurs, redirect to an error page. If successful, redirect back to index.
+"""
 def add_rider(request, ride_id):
     ride = get_object_or_404(Ride, pk=ride_id)
     user = request.user
@@ -132,6 +170,9 @@ def add_rider(request, ride_id):
                 return HttpResponse("Something went wrong trying to remove user")
 
 
+"""
+Get search term from request. If it is not negative, perform the search.
+"""
 def search(request):
     term = request.POST['search-term']
     if term == '':
@@ -139,6 +180,10 @@ def search(request):
     return redirect('/cabrides/search/%s' % term)
 
 
+"""
+(very) basic search by filtering destinations that contain the given term. Render
+filtered list.
+"""
 def search_term(request, term):
     user = request.user
     search_rides = Ride.objects.filter(
