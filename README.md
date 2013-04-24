@@ -40,6 +40,7 @@ Features
 + You can filter out and view only cab rides that you are a participant (and/or owner) of
 + Full cab rides are "greyed out" for easy recognition
 + Only cab rides that have **yet to occur** are displayed
++ Nice HTML/CSS errror handling for signup if using incorrect email address or non-matching passwords
 
 Planned Features Moving Forward
 -------------------------------
