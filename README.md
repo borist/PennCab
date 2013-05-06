@@ -15,7 +15,7 @@ To run the project, you must:
 + Enter your database credentials in `penncab/penncab/settings.py` in the `DATABASES` dictionary
 + To Run locally:
   - Comment out the last 4 lines in `penncab/penncab/settings.py`
-  - Run the comment `python penncab/manage.py runserver` or use heroku's `foreman start`
+  - Run the command `python penncab/manage.py runserver` or use heroku's `foreman start`
 
 Using The App
 -------------
